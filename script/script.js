@@ -1,6 +1,7 @@
 
 let interviewList = [];
-let rejectedList = []; 
+let rejectedList = [];
+let currentStatus = 'all';
 
 
 let totalCount = document.getElementById('total-count');
@@ -40,6 +41,7 @@ function toggleStyle (id) {
 
     const selected = document.getElementById(id);
     // console.log(id);
+    currentStatus = id;
 
     // adding blue-bg-600 for currentBtn
     selected.classList.add('bg-blue-600', 'text-white');
@@ -48,6 +50,7 @@ function toggleStyle (id) {
     if(id == 'interview-filter-btn') {
         allCardsSection.classList.add('hidden');
         filteredSection.classList.remove('hidden');
+        renderInterview ();
     }
     else if(id == 'all-filter-btn') {
         allCardsSection.classList.remove('hidden');
@@ -56,6 +59,7 @@ function toggleStyle (id) {
     else if(id == 'rejected-filter-btn') {
         allCardsSection.classList.add('hidden');
         filteredSection.classList.remove('hidden');
+        renderRejected ();
     }
 
 }
@@ -90,9 +94,15 @@ mainContainer.addEventListener('click', function (event){
         interviewList.push(cardsInfo);
     }
 
+    rejectedList = rejectedList.filter(item => item.mobileCorp != cardsInfo.mobileCorp);
+
     calculateCount () 
 
-    renderInterview ()
+    if(currentStatus == 'rejected-filter-btn'){
+        renderRejected ();
+    }
+
+    // renderInterview ()
 
    }
     
@@ -122,9 +132,15 @@ mainContainer.addEventListener('click', function (event){
         rejectedList.push(cardsInfo);
     }
 
+    interviewList = interviewList.filter(item => item.mobileCorp != cardsInfo.mobileCorp);
+
+    if(currentStatus == 'interview-filter-btn'){
+       renderInterview () 
+    }
+
     calculateCount () 
 
-    renderRejected ()
+    // renderRejected ()
 
    }
 
