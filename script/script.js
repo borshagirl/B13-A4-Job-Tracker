@@ -8,6 +8,7 @@ let totalCount = document.getElementById('total-count');
 let interviewCount = document.getElementById('interview-count');
 let rejectedCount = document.getElementById('rejected-count');
 
+
 const allFilterBtn = document.getElementById('all-filter-btn');
 const interviewFilterBtn = document.getElementById('interview-filter-btn');
 const rejectedFilterBtn = document.getElementById('rejected-filter-btn');
@@ -16,11 +17,14 @@ const allCardsSection = document.getElementById('all-cards');
 const mainContainer = document.querySelector('main');
 const filteredSection = document.getElementById('filtered-section');
 
+const emptyMsg = document.getElementById('empty-msg');
+
 
 function calculateCount (){
     totalCount.innerText = allCardsSection.children.length;
     interviewCount.innerText = interviewList.length;
     rejectedCount.innerText = rejectedList.length;
+
 
 }
 
@@ -50,8 +54,11 @@ function toggleStyle (id) {
     if(id == 'interview-filter-btn') {
         allCardsSection.classList.add('hidden');
         filteredSection.classList.remove('hidden');
-        renderInterview ();
+        emptyMsg.classList.remove('hidden');
+        
+       renderInterview ();
     }
+
     else if(id == 'all-filter-btn') {
         allCardsSection.classList.remove('hidden');
         filteredSection.classList.add('hidden');
@@ -59,10 +66,14 @@ function toggleStyle (id) {
     else if(id == 'rejected-filter-btn') {
         allCardsSection.classList.add('hidden');
         filteredSection.classList.remove('hidden');
+        emptyMsg.classList.remove('hidden')
         renderRejected ();
     }
 
 }
+
+ 
+
 
 
 mainContainer.addEventListener('click', function (event){
@@ -149,6 +160,7 @@ mainContainer.addEventListener('click', function (event){
 
 // for interview function
 function renderInterview () {
+
     filteredSection.innerHTML = ''
 
     for(let interview of interviewList){

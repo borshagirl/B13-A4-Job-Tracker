@@ -50,7 +50,7 @@
     <main class="w-11/12 mx-auto">
         <div class="flex justify-between space-y-4">
             <h2 class="font-bold text-xl text-blue-950">Available jobs</h2>
-            <p id="" class="text-gray-600 text-sm">8 Jobs</p>
+            <p id="jobsCount" class="text-gray-600 text-sm">8 Jobs</p>
         </div>
 
         <div class="space-x-2 mb-6">
@@ -292,10 +292,19 @@
 
         </section>
 
+        <!-- Empty msg  -->
+         <section class="bg-white mt-5 mb-8 rounded-md">
+            <div id="empty-msg" class="text-center p-14 hidden">
+               <img class="w-24 mx-auto mb-4" src="jobs.png" alt="">
+               <h3 class="font-bold text-xl text-blue-950">No Jobs Available</h3>
+               <p class="text-sm text-gray-600">Check back soon for new job opportunities</p>
+            </div>
+          </section>  
+
 
     </main>
   
-  
+   
 
     <script src="script/script.js"></script>
 </body>
