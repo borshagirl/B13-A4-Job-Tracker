@@ -8,6 +8,8 @@ let totalCount = document.getElementById('total-count');
 let interviewCount = document.getElementById('interview-count');
 let rejectedCount = document.getElementById('rejected-count');
 
+let jobCount = document.getElementById('jobsCount');
+
 
 const allFilterBtn = document.getElementById('all-filter-btn');
 const interviewFilterBtn = document.getElementById('interview-filter-btn');
@@ -19,12 +21,19 @@ const filteredSection = document.getElementById('filtered-section');
 
 const emptyMsg = document.getElementById('empty-msg');
 
+const deleteIcon = document.querySelectorAll('.delete-icon');
+deleteIcon.forEach(function(btn){
+    btn.addEventListener('click', function(){
+        btn.parentNode.parentNode.remove();
+    });
+});
+
 
 function calculateCount (){
     totalCount.innerText = allCardsSection.children.length;
     interviewCount.innerText = interviewList.length;
     rejectedCount.innerText = rejectedList.length;
-
+    
 
 }
 
@@ -73,9 +82,6 @@ function toggleStyle (id) {
 }
 
  
-
-
-
 mainContainer.addEventListener('click', function (event){
     // console.log(event.target.classList.contains('interview-btn'));
     
@@ -85,6 +91,7 @@ mainContainer.addEventListener('click', function (event){
 
     const mobileCorp = parentNode.querySelector('.mobileCorp').innerText;
     const reactDeveloper = parentNode.querySelector('.reactDeveloper').innerText;
+    const location = parentNode.querySelector('.location').innerText;
     const remote = parentNode.querySelector('.remote').innerText;
     const status = parentNode.querySelector('.status').innerText;
     const notes = parentNode.querySelector('.notes').innerText;
@@ -94,6 +101,7 @@ mainContainer.addEventListener('click', function (event){
     const cardsInfo = {
         mobileCorp,
         reactDeveloper,
+        location,
         remote,
         status: 'Interview',
         notes
@@ -123,6 +131,7 @@ mainContainer.addEventListener('click', function (event){
 
     const mobileCorp = parentNode.querySelector('.mobileCorp').innerText;
     const reactDeveloper = parentNode.querySelector('.reactDeveloper').innerText;
+    const location = parentNode.querySelector('.location').innerText;
     const remote = parentNode.querySelector('.remote').innerText;
     const status = parentNode.querySelector('.status').innerText;
     const notes = parentNode.querySelector('.notes').innerText;
@@ -132,6 +141,7 @@ mainContainer.addEventListener('click', function (event){
     const cardsInfo = {
         mobileCorp,
         reactDeveloper,
+        location,
         remote,
         status: 'Rejected',
         notes
@@ -175,6 +185,8 @@ function renderInterview () {
                     <div>
                         <h2 class="mobileCorp font-bold text-xl text-blue-950">${interview.mobileCorp}</h2>
                         <p class="reactDeveloper text-gray-500 text-sm">${interview.reactDeveloper}</p>
+                        <p class="location text-gray-500 text-sm mt-2">${interview.location}</p>
+
                     </div>
                     <!-- left part 2 -->
                     <div>
@@ -202,6 +214,7 @@ function renderInterview () {
 
 // for rejected function
 function renderRejected () {
+
     filteredSection.innerHTML = ''
 
     for(let rejected of rejectedList){
@@ -216,6 +229,8 @@ function renderRejected () {
                     <div>
                         <h2 class="mobileCorp font-bold text-xl text-blue-950">${rejected.mobileCorp}</h2>
                         <p class="reactDeveloper text-gray-500 text-sm">${rejected.reactDeveloper}</p>
+                        <p class="location text-gray-500 text-sm mt-2">${rejected.location}</p>
+
                     </div>
                     <!-- left part 2 -->
                     <div>
