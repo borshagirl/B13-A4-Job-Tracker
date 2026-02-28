@@ -1,257 +1,129 @@
 
-let interviewList = [];
-let rejectedList = [];
-let currentStatus = 'all';
+let currentTab = "all";
+let tabActive = ["bg-blue-500", "text-white"];
+let tabInActive = ["bg-white", "text-gray-500"];
+
+const allContainer = document.getElementById("all-container");
+const interviewContainer = document.getElementById("interview-container");
+const rejectedContainer = document.getElementById("rejected-container");
+const emptyState = document.getElementById("empty-state");
 
 
-let totalCount = document.getElementById('total-count');
-let interviewCount = document.getElementById('interview-count');
-let rejectedCount = document.getElementById('rejected-count');
+function switchTab(tab) {
+    // console.log(tab);
+    const tabs = ["all", "interview", "rejected"];
+    currentTab = tab;
 
-let jobCount = document.getElementById('jobsCount');
+    for (const t of tabs) {
+        const tabName = document.getElementById("tab-" + t);
+        if(t === tab) {
+            tabName.classList.remove(...tabInActive);
+            tabName.classList.add(...tabActive);
+        }
+        else{
+            tabName.classList.remove(...tabActive);
+            tabName.classList.add(...tabInActive);
+        }
+    }
+
+    const pages = [allContainer, interviewContainer, rejectedContainer];
+
+    for(const section of pages) {
+        section.classList.add("hidden");
+    }
+
+    emptyState.classList.add("hidden");
 
 
-const allFilterBtn = document.getElementById('all-filter-btn');
-const interviewFilterBtn = document.getElementById('interview-filter-btn');
-const rejectedFilterBtn = document.getElementById('rejected-filter-btn');
 
-const allCardsSection = document.getElementById('all-cards');
-const mainContainer = document.querySelector('main');
-const filteredSection = document.getElementById('filtered-section');
+    if(tab === "all"){
+        allContainer.classList.remove("hidden");
 
-const emptyMsg = document.getElementById('empty-msg');
+        if(allContainer.children.length < 1) {
+            emptyState.classList.remove("hidden");
+        }
+    }
+    else if(tab === "interview"){
+        interviewContainer.classList.remove("hidden");
 
-const deleteIcon = document.querySelectorAll('.delete-icon');
-deleteIcon.forEach(function(btn){
-    btn.addEventListener('click', function(){
-        btn.parentNode.parentNode.remove();
-    });
-});
+         if(interviewContainer.children.length < 1) {
+            emptyState.classList.remove("hidden");
+        }
+    }
+    else{
+        rejectedContainer.classList.remove("hidden");
 
+         if(rejectedContainer.children.length < 1) {
+            emptyState.classList.remove("hidden");
+        }
+    }
 
-function calculateCount (){
-    totalCount.innerText = allCardsSection.children.length;
-    interviewCount.innerText = interviewList.length;
-    rejectedCount.innerText = rejectedList.length;
-    
-
+    updateState();
 }
 
-calculateCount ()
+// state update
+const totalState = document.getElementById("state-total");
+const interviewState = document.getElementById("state-interview");
+const rejectedState = document.getElementById("state-rejected");
+const availableState = document.getElementById("available-jobs-count");
 
 
-function toggleStyle (id) {
+switchTab(currentTab);
 
-    // removing all btn by bg-blue-600
-    allFilterBtn.classList.remove('bg-blue-600', 'text-white');
-    interviewFilterBtn.classList.remove('bg-blue-600', 'text-white');
-    rejectedFilterBtn.classList.remove('bg-blue-600', 'text-white');
 
-    // adding all btn by bg-white
-    allFilterBtn.classList.add('bg-white', 'text-gray-500');
-    interviewFilterBtn.classList.add('bg-white', 'text-gray-500');
-    rejectedFilterBtn.classList.add('bg-white', 'text-gray-500');
+document.getElementById("jobs-container").addEventListener("click", function(event) {
+    const clickedElement = event.target;
+    const card = clickedElement.closest(".card");
+    const parent = card.parentNode;
+    const status = card.querySelector(".status");
 
-    const selected = document.getElementById(id);
-    // console.log(id);
-    currentStatus = id;
+    if (clickedElement.classList.contains("interview-btn")) {
+        status.innerText ="Interview";
+        interviewContainer.appendChild(card);
 
-    // adding blue-bg-600 for currentBtn
-    selected.classList.add('bg-blue-600', 'text-white');
-    selected.classList.remove('bg-white', 'text-gray-500');
-
-    if(id == 'interview-filter-btn') {
-        allCardsSection.classList.add('hidden');
-        filteredSection.classList.remove('hidden');
-        emptyMsg.classList.remove('hidden');
-        
-       renderInterview ();
+        // updateState();
     }
 
-    else if(id == 'all-filter-btn') {
-        allCardsSection.classList.remove('hidden');
-        filteredSection.classList.add('hidden');
-    }
-    else if(id == 'rejected-filter-btn') {
-        allCardsSection.classList.add('hidden');
-        filteredSection.classList.remove('hidden');
-        emptyMsg.classList.remove('hidden')
-        renderRejected ();
+    if (clickedElement.classList.contains("rejected-btn")) {
+        status.innerText = "Rejected";
+        rejectedContainer.appendChild(card);
+
+        // updateState();
     }
 
-}
+    if (clickedElement.classList.contains("delete-btn")) {
+        parent.removeChild(card);
 
- 
-mainContainer.addEventListener('click', function (event){
-    // console.log(event.target.classList.contains('interview-btn'));
-    
-    // for interview btn
-    if(event.target.classList.contains('interview-btn')){
-    const parentNode = event.target.parentNode.parentNode;
-
-    const mobileCorp = parentNode.querySelector('.mobileCorp').innerText;
-    const reactDeveloper = parentNode.querySelector('.reactDeveloper').innerText;
-    const location = parentNode.querySelector('.location').innerText;
-    const remote = parentNode.querySelector('.remote').innerText;
-    const status = parentNode.querySelector('.status').innerText;
-    const notes = parentNode.querySelector('.notes').innerText;
-
-    parentNode.querySelector('.status').innerText = 'Interview'
-
-    const cardsInfo = {
-        mobileCorp,
-        reactDeveloper,
-        location,
-        remote,
-        status: 'Interview',
-        notes
+        // updateState();
     }
 
-    const mobileCorpExist = interviewList.find(item => item.mobileCorp == cardsInfo.mobileCorp);
-
-    if(!mobileCorpExist){
-        interviewList.push(cardsInfo);
-    }
-
-    rejectedList = rejectedList.filter(item => item.mobileCorp != cardsInfo.mobileCorp);
-
-    calculateCount () 
-
-    if(currentStatus == 'rejected-filter-btn'){
-        renderRejected ();
-    }
-
-    // renderInterview ()
-
-   }
-    
-    // for rejected btn
-    else if(event.target.classList.contains('rejected-btn')){
-    const parentNode = event.target.parentNode.parentNode;
-
-    const mobileCorp = parentNode.querySelector('.mobileCorp').innerText;
-    const reactDeveloper = parentNode.querySelector('.reactDeveloper').innerText;
-    const location = parentNode.querySelector('.location').innerText;
-    const remote = parentNode.querySelector('.remote').innerText;
-    const status = parentNode.querySelector('.status').innerText;
-    const notes = parentNode.querySelector('.notes').innerText;
-
-    parentNode.querySelector('.status').innerText = 'Rejected'
-
-    const cardsInfo = {
-        mobileCorp,
-        reactDeveloper,
-        location,
-        remote,
-        status: 'Rejected',
-        notes
-    }
-
-    const mobileCorpExist = rejectedList.find(item => item.mobileCorp == cardsInfo.mobileCorp);
-
-    if(!mobileCorpExist){
-        rejectedList.push(cardsInfo);
-    }
-
-    interviewList = interviewList.filter(item => item.mobileCorp != cardsInfo.mobileCorp);
-
-    if(currentStatus == 'interview-filter-btn'){
-       renderInterview () 
-    }
-
-    calculateCount () 
-
-    // renderRejected ()
-
-   }
-
+    updateState();
 })
 
 
-// for interview function
-function renderInterview () {
+function updateState() {
+    // totalState.innerText = allContainer.children.length;
+    // interviewState.innerText = interviewContainer.children.length;
+    // rejectedState.innerText = rejectedContainer.children.length;
 
-    filteredSection.innerHTML = ''
+    const counts = {
+        all: allContainer.children.length,
+        interview: interviewContainer.children.length,
+        rejected: rejectedContainer.children.length,
+    };
 
-    for(let interview of interviewList){
-        // console.log(interview);
-        
-        let createDiv = document.createElement('div')
-        createDiv.className = 'bg-white flex justify-between p-6 rounded-md'
-        createDiv.innerHTML = `
+    totalState.innerText = counts["all"];
+    interviewState.innerText = counts["interview"];
+    rejectedState.innerText = counts["rejected"];
 
-        <div class="space-y-4">
-                    <!-- left part 1 -->
-                    <div>
-                        <h2 class="mobileCorp font-bold text-xl text-blue-950">${interview.mobileCorp}</h2>
-                        <p class="reactDeveloper text-gray-500 text-sm">${interview.reactDeveloper}</p>
-                        <p class="location text-gray-500 text-sm mt-2">${interview.location}</p>
+    availableState.innerText = counts[currentTab];
 
-                    </div>
-                    <!-- left part 2 -->
-                    <div>
-                        <p class="remote text-gray-500 text-sm">${interview.remote}</p>
-                     </div>
-                     <!-- left part 3 -->
-                      <p class="status w-[120px] h-[34px] p-1 bg-blue-50 text-blue-950 font-semibold rounded-md">${interview.status}</p>
-                      <p class="notes text-gray-700 text-sm">${interview.notes}</p>
-                     <div class="space-x-2">
-                        <button class="interview-btn font-semibold text-sm px-3 py-2 text-green-400 border border-green-400 rounded-md">INTERVIEW</button>
-                        <button class="rejected-btn font-semibold text-sm px-3 py-2 text-red-400 border border-red-400 rounded-md">REJECTED</button>
-                     </div>
-                    </div>
-
-                <!-- right-parts -->
-                <div>
-                    <span class="delete-icon border border-gray-200 p-1.5 rounded-full text-gray-400 text-[12px]"><i class="fa-regular fa-trash-can"></i></span>
-                </div>
-
-        `
-
-       filteredSection.appendChild(createDiv);
+    if(counts[currentTab] < 1) {
+        emptyState.classList.remove("hidden");
+    }
+    else{
+        emptyState.classList.add("hidden");
     }
 }
 
-// for rejected function
-function renderRejected () {
-
-    filteredSection.innerHTML = ''
-
-    for(let rejected of rejectedList){
-        // console.log(rejected);
-        
-        let createDiv = document.createElement('div')
-        createDiv.className = 'bg-white flex justify-between p-6 rounded-md'
-        createDiv.innerHTML = `
-
-        <div class="space-y-4">
-                    <!-- left part 1 -->
-                    <div>
-                        <h2 class="mobileCorp font-bold text-xl text-blue-950">${rejected.mobileCorp}</h2>
-                        <p class="reactDeveloper text-gray-500 text-sm">${rejected.reactDeveloper}</p>
-                        <p class="location text-gray-500 text-sm mt-2">${rejected.location}</p>
-
-                    </div>
-                    <!-- left part 2 -->
-                    <div>
-                        <p class="remote text-gray-500 text-sm">${rejected.remote}</p>
-                     </div>
-                     <!-- left part 3 -->
-                      <p class="status w-[120px] h-[34px] p-1 bg-blue-50 text-blue-950 font-semibold rounded-md">${rejected.status}</p>
-                      <p class="notes text-gray-700 text-sm">${rejected.notes}</p>
-                     <div class="space-x-2">
-                        <button class="interview-btn font-semibold text-sm px-3 py-2 text-green-400 border border-green-400 rounded-md">INTERVIEW</button>
-                        <button class="rejected-btn font-semibold text-sm px-3 py-2 text-red-400 border border-red-400 rounded-md">REJECTED</button>
-                     </div>
-                    </div>
-
-                <!-- right-parts -->
-                <div>
-                    <span class="delete-icon border border-gray-200 p-1.5 rounded-full text-gray-400 text-[12px]"><i class="fa-regular fa-trash-can"></i></span>
-                </div>
-
-        `
-
-       filteredSection.appendChild(createDiv);
-    }
-}
+updateState();
